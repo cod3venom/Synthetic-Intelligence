@@ -1,0 +1,16 @@
+{
+  "1": {
+    "ID": 1,
+    "NAME": "Get Next link",
+    "QUERY": "SELECT * FROM BLABABLA WHERE d=?;",
+    "Class": "some alert",
+    "Initializer": "alert1"
+  },
+  "2": {
+    "ID": 1,
+    "NAME": "Get Next link",
+    "QUERY": "SELECT * FROM BLABABLA WHERE d=?;",
+    "Class": "some alert",
+    "Initializer": "alert1"
+  }
+}
