@@ -1,0 +1,6 @@
+{
+  "DB_HOSTNAME": "localhost",
+  "DB_USERNAME": "root",
+  "DB_PASSWORD": "pirate0013",
+  "DB_NAME": "FB_VIEW"
+}
