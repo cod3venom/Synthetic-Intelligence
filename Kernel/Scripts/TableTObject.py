@@ -104,10 +104,10 @@ protected += """    protected $RETURN_TYPE;
     """
 protected = protected.replace("SETTERS;",copytobject);
 update = '''
-    public function Update({} $Class)*[0]
+    public function Update()*[0]
         
     *[1]
-    public function Remove({} $Class)*[0]
+    public function Remove()*[0]
         
     *[1]
 '''.format(classname,classname)
