@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Kernel\Classes\Security;
+namespace Kernel\Security;
 
 
-use Kernel\Classes\Config\Constants;
-use Kernel\Classes\DataOperations\JSON;
+use Kernel\Config\Constants;
+use Kernel\DataOperations\JSON;
 
 class Cerber
 {

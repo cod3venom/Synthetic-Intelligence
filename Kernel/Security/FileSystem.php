@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Kernel\Classes\Security;
+namespace Kernel\Security;
 
 
 class FileSystem

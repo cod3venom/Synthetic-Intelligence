@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Kernel\Classes\DataOperations;
+namespace Kernel\DataOperations;
 
 
 class JSON

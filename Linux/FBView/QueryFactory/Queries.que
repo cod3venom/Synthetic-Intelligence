@@ -1,4 +1,17 @@
-#CHECK IF USER EXISTS
+#Check if user exists and return bool or just an user records
 1$SELECT * FROM FB_VIEW.FB_USERS WHERE USERNAME = ? AND PASSWORD = ?;
-#ADD USER INTO DB
+
+#Add user into db
 2$INSERT INTO FB_VIEW.FB_USERS (USER_ID,USERNAME,PASSWORD,IPADDRESS,FLAG) VALUES (?, ?, ?, ?, ?);
+
+#Select all users from db
+3$SELECT * FROM FB_VIEW.FB_USERS;
+
+#Update user by credentials
+4$UPDATE FB_VIEW.FB_USERS SET USERNAME = ?, PASSWORD = ?, IPADDRESS = ?, FLAG = ? WHERE USER_ID = ?;
+
+#Check if user exists by USER_ID
+5$SELECT * FROM FB_VIEW.FB_USERS WHERE USER_ID = ?;
+
+#Remove user by USER_ID
+6$DELETE FROM FB_VIEW.FB_USERS WHERE USER_ID = ?;

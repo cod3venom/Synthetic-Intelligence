@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Kernel\Classes\Interfaces;
+namespace Kernel\Interfaces;
 
 
 interface IDataObject

@@ -6,7 +6,7 @@
     CONST PHP = '.php';
 
     spl_autoload_register(function ($component) {
-        Debug(1,STATUS_PREFIX.$component);
+        Debug(1,STATUS_PREFIX.$component."</br>");
         BootLoader($component);
     });
 
@@ -16,12 +16,12 @@
         {
             $component = $component.PHP;
             $component = str_replace(BACKSLASH,SLASH,$component);
-            //include_once $component;
+            include_once $component;
         }
     }
 
     function Debug($status,$data)
     {
-        echo $data;
+        //echo $data;
     }
 ?>

@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Kernel\Database;
+namespace Kernel\DataBase;
 
 
-class Mysql extends DButill
+class MySql extends DButill
 {
     protected  $Connection;
     protected  $QueryFactory;
