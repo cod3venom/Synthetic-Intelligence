@@ -1,3 +1,5 @@
+import requests as req
+from Kernel.HTTP.httpClient import HttpClient
 from Kernel.Logger.Logger import Logger, Levels
 from DAO.LocalSettingsTObject import LocalSettingsTObject
 
@@ -8,3 +10,6 @@ __localSettings__ = LocalSettingsTObject(settings_file=__settings_file__, softwa
 
 __levels__ = Levels()
 __logger__ = Logger(texts_file=__localSettings__.en_US, log_format=__localSettings__.LOG_FORMAT)
+
+__http__ = HttpClient()
+__http__.setSession(req.session())

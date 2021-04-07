@@ -18,26 +18,40 @@ class Browser:
     __browserConfig: ChromeConfig
     __chromeDriver: webdriver.Chrome
     __jsBundle: JsBundle
-    alive = False
+    __alive = False
 
-    def __init__(self, tor=False, incognito=True, headless=False, cache_folder=""):
+    def __init__(self, tor=False, incognito=True, headless=False, cache_folder="", appMode: str = ""):
         self.__jsBundle = JsBundle(js_payloads_path=__localSettings__.JS_PAYLOADS_PATH)
-        self.buildBrowserSettings(tor=tor, incognito=incognito, headless=headless, cache_folder=cache_folder)
+        self.setBrowserSettings(BrowserSettingsTObject(tor=tor, incognito=incognito, headless=headless, cache_folder=cache_folder, appMode=appMode))
         self.buildBrowserConfig()
         self.buildChromeDriver()
 
-    def buildBrowserSettings(self, tor=False, incognito=True, headless=False,
-                             cache_folder="") -> BrowserSettingsTObject:
-        self.setBrowserSettings(BrowserSettingsTObject(tor=False, incognito=True, headless=False, cache_folder=""))
-        return self.getBrowserSettings()
+        self.__noNavigator = HideNavigatorFlag(chromeDriver=self)
+        self.__noHeadlessIndicator = HideHeadlessFlag(chromeDriver=self)
+        self.__elements = Elements(chromeDriver=self)
+        self.__features = Features(chromeDriver=self, jsBundle=self.__jsBundle)
 
     def setBrowserSettings(self, browserSettings: BrowserSettingsTObject):
+        """
+        :param browserSettings:
+        :type browserSettings:
+        :return:
+        :rtype:
+        """
         self.__browserSettingsTObject = browserSettings
 
     def getBrowserSettings(self) -> BrowserSettingsTObject:
+        """
+        :return BrowserSettingsTObject:
+        :rtype BrowserSettingsTObject:
+        """
         return self.__browserSettingsTObject
 
     def buildBrowserConfig(self) -> ChromeConfig:
+        """
+        :return ChromeConfig:
+        :rtype ChromeConfig:
+        """
         self.__browserConfig = ChromeConfig(self.getBrowserSettings())
         return self.getBrowserConfig()
 
@@ -70,11 +84,25 @@ class Browser:
     def getJsBundle(self) -> JsBundle:
         return self.__jsBundle
 
+    def execute_js(self, code: str, *args):
+        if self.__chromeDriver is not None:
+            return self.__chromeDriver.execute_script(code, args)
+        return {}
+
+    def execute_cdp(self, code, cmd_args):
+        if self.__chromeDriver is not None:
+            return self.__chromeDriver.execute_cdp_cmd(code, cmd_args)
+        return {}
+
     def keepAlive(self):
-        while self.alive:
-            if not self.alive:
+        self.__alive = True
+        while self.__alive:
+            if not self.__alive:
                 break
             pass
+
+    def stopAlive(self):
+        self.__alive = False
 
     def navigate(self, navigate_to: str, invoke_adhd: bool = False, keep_alive: bool = False):
         """
@@ -95,6 +123,25 @@ class Browser:
             while True:
                 pass
 
+    # Elements API
+    def input(self, target, value, searchType="css"):
+        self.__elements.input(target, value, searchType)
+
+    def click(self, target):
+        self.__elements.click(target=target)
+
+    # Features API
+    def runMouseADHD(self):
+        self.__features.runMouseADHD()
+
+    def installTheme(self, theme_num: int):
+        self.__features.installTheme(theme_num)
+
+
+class Elements:
+    def __init__(self, chromeDriver: Browser):
+        self.__chromeDriver = chromeDriver
+
     def Exists(self, target, searchType="css"):
         """
         Check if element exists
@@ -108,10 +155,10 @@ class Browser:
         time.sleep(.4)
         try:
             if searchType == 'css':
-                self.__chromeDriver.find_element_by_css_selector(target)
+                self.__chromeDriver.getChromeDriver().find_element_by_css_selector(target)
                 return True
             if searchType == 'xpath':
-                self.__chromeDriver.find_element_by_css_selector(target)
+                self.__chromeDriver.getChromeDriver().find_element_by_css_selector(target)
                 return True
             return False
         except NoSuchElementException:
@@ -155,7 +202,7 @@ class Browser:
         :rtype:
         """
         try:
-            return self.__chromeDriver.find_elements_by_xpath(target)
+            return self.__chromeDriver.getChromeDriver().find_elements_by_xpath(target)
         except NoSuchElementException:
             pass
 
@@ -168,26 +215,72 @@ class Browser:
         :rtype:
         """
         try:
-            return self.__chromeDriver.find_element_by_css_selector(target)
+            return self.__chromeDriver.getChromeDriver().find_element_by_css_selector(target)
         except NoSuchElementException:
             pass
 
-    def execute_js(self, code: str) -> dict:
-        if self.__chromeDriver is not None:
-            return self.__chromeDriver.execute_script(code)
-        return {}
 
-    def execute_cdp(self, code):
-        if self.__chromeDriver is not None:
-            return self.__chromeDriver.execute_cdp_cmd(code, "")
-        return {}
+class HideNavigatorFlag:
+
+    def __init__(self, chromeDriver: Browser):
+        self.__chromeDriver = chromeDriver
+        self.exploit()
+
+    def removeFlag(self):
+        return self.__chromeDriver.execute_cdp(
+            "Page.addScriptToEvaluateOnNewDocument",
+            {
+                "source":
+                    """
+                        Object.defineProperty(window, 'navigator', {
+                        value: new Proxy(navigator, {
+                        has: (target, key) => (key === 'webdriver' ? false : key in target),
+                        get: (target, key) =>
+                            key === 'webdriver'
+                            ? undefined
+                            : typeof target[key] === 'function'
+                            ? target[key].bind(target)
+                            : target[key]
+                                })
+                        });
+                        console.log = console.dir = console.error = function(){}
+                        """
+            },
+        )
+
+    def exploit(self):
+        self.removeFlag()
+
+
+class HideHeadlessFlag:
+
+    def __init__(self, chromeDriver: Browser):
+        self.__chromeDriver = chromeDriver
+        self.exploit()
+
+    def __getUserAgent(self) -> str:
+        return self.__chromeDriver.execute_js('return navigator.userAgent;')
+
+    def __replaceHeadlessAgent(self):
+        actualAgent = self.__getUserAgent().replace("HeadlessChrome", "Chrome").replace("headlessChrome", "Chrome")
+        self.__chromeDriver.execute_cdp("Network.setUserAgentOverride", {"userAgent": actualAgent})
+        return self.__getUserAgent()
+
+    def exploit(self):
+        self.__replaceHeadlessAgent()
+
+
+class Features:
+    def __init__(self, chromeDriver: Browser, jsBundle: JsBundle):
+        self.__chromeDriver = chromeDriver
+        self.__jsBundle = jsBundle
 
     def runMouseADHD(self):
-        self.execute_js(self.__jsBundle.jsPackGet(Payloads.MouseADHD))
+        self.__chromeDriver.execute_js(self.__jsBundle.jsPackGet(Payloads.MouseADHD))
 
     def installTheme(self, theme_num: int):
         jsTheme = self.__jsBundle.jsPackGet(Payloads.Theme)
-        self.execute_js(jsTheme.replace('"THEME_NUM;"', str(theme_num)))
+        self.__chromeDriver.execute_js(jsTheme.replace('"THEME_NUM;"', str(theme_num)))
 
 
 class Payloads:

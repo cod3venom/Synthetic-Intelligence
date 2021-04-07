@@ -7,21 +7,12 @@ from Kernel.FileSystem.fSys import fSys
 
 
 class CreateAccount:
-    __hostAddress: str
+    __hostAddress: str = "https://facebook.com"
 
     def __init__(self, profile_file):
         self.__account = FacebookCreateAccountTObject.TO(fSys().readfile(profile_file))
-        self.__browser = Browser()
-
-    def __initializeHostAddress(self):
-        if self.__account.Desktop:
-            self.__hostAddress = "https://facebook.com"
-        else:
-            self.__hostAddress = "https://m.facebook.com"
-
-    def __loadPage(self):
-        self.__browser.navigate(self.__hostAddress, invoke_adhd=False, keep_alive=False)
-        #self.__browser.installTheme(1)
+        self.__browser = Browser(incognito=False, appMode=self.__hostAddress)
+        self.__browser.installTheme(2)
 
     def __enterData(self):
         payload = self.__browser.getJsBundle().jsPackGet("CreateFacebookAccount")
@@ -39,11 +30,7 @@ class CreateAccount:
     def start(self):
 
         if self.__account.FirstName != "":
-            self.__initializeHostAddress()
-            self.__loadPage()
             self.__enterData()
-
-            self.__browser.alive = True
             self.__browser.keepAlive()
         else:
             print("Not all fields are filled")

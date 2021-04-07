@@ -27,6 +27,8 @@ class ChromeConfig:
             # Allow caching browser data
             option.add_argument('--user-data={}'.format(self.browserSettingsTObject.cache_folder))
 
+        if len(self.browserSettingsTObject.appMode) > 3:
+            option.add_argument("--app="+self.browserSettingsTObject.appMode)
         if self.browserSettingsTObject.tor == 1:
             # Use tor onions
             option.add_argument('--proxy-server=socks5://127.0.0.1:9050')
