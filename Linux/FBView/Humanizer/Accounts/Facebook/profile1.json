@@ -1,0 +1,12 @@
+{
+  "FirstName": "Zender",
+  "LastName": "Admiralov",
+  "Email": "zender@gmail.com",
+  "Password": "admin123",
+  "BirthMonth": "11",
+  "BirthDay": "12",
+  "BirthYear": "1998",
+  "Gender": "Male",
+  "PhoneNumber": "empty",
+  "Desktop": true
+}

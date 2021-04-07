@@ -1,0 +1,1 @@
+window.scrollTo(document.body.scrollHeight, 0);
