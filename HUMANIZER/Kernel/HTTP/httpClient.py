@@ -6,6 +6,7 @@ class HttpClient:
     __useTor: bool
     __userAgent: str
     __session: req.Session
+    __headers: dict
 
     def setAddress(self, address: str):
         self.__address = address
@@ -34,6 +35,19 @@ class HttpClient:
     def getSession(self) -> req.Session:
         return self.__session
 
+    def setHeaders(self, headers: dict):
+        self.__headers = headers
+
+    def getHeaders(self) -> dict:
+        return self.__headers
+
+    def genDefaultHeaders(self) -> dict:
+        return {
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Accept-Language': 'en-US,en;q=0.9,pl;q=0.8',
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'
+        }
+
     def getRequest(self, address: str = "", stream: bool = False):
         target_host = ""
         if address != "":
@@ -54,5 +68,4 @@ class HttpClient:
         return response
 
     def getImage(self, address):
-        head
-        return req.get(address, stream=True).raw
+        return req.get(address, headers=self.genDefaultHeaders(), stream=True).raw

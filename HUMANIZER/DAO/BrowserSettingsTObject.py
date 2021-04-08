@@ -5,7 +5,7 @@ from Kernel.Global import __levels__, __logger__
 class BrowserSettingsTObject:
 
     def __init__(self, tor: bool = False, incognito: bool = False, headless: bool = False, cache_folder: str = "",
-                 appMode: str = ""):
+                 appMode: str = "", generateUserAgent: bool = False):
         """
         Just initialize some chromedriver options variables to customize browser startup
         :param tor
@@ -18,6 +18,7 @@ class BrowserSettingsTObject:
         self.headless = headless
         self.cache_folder = cache_folder
         self.appMode = appMode
+        self.generateUserAgent = generateUserAgent
         __logger__.Print(0, __levels__.Info, self.__str__())
 
     def __str__(self):

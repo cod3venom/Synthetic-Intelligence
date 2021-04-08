@@ -10,7 +10,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from DAO.BrowserSettingsTObject import BrowserSettingsTObject
 from Kernel.Browser.Drivers.Chromedriver.ChromeConfig import ChromeConfig
 from Kernel.Browser.Hacking.JsBundle import JsBundle
-from Kernel.Global import __localSettings__, __logger__
+from Kernel.FileSystem.fSys import fSys
+from Kernel.Global import __localSettings__, __logger__, __levels__, __texts__
 
 
 class Browser:
@@ -20,9 +21,12 @@ class Browser:
     __jsBundle: JsBundle
     __alive = False
 
-    def __init__(self, tor=False, incognito=True, headless=False, cache_folder="", appMode: str = ""):
+    def __init__(self, tor=False, incognito=True, headless=False, cache_folder="", appMode: str = "",
+                 generateUserAgent: bool = False):
         self.__jsBundle = JsBundle(js_payloads_path=__localSettings__.JS_PAYLOADS_PATH)
-        self.setBrowserSettings(BrowserSettingsTObject(tor=tor, incognito=incognito, headless=headless, cache_folder=cache_folder, appMode=appMode))
+        self.setBrowserSettings(
+            BrowserSettingsTObject(tor=tor, incognito=incognito, headless=headless, cache_folder=cache_folder,
+                                   appMode=appMode, generateUserAgent=generateUserAgent))
         self.buildBrowserConfig()
         self.buildChromeDriver()
 
@@ -104,6 +108,18 @@ class Browser:
     def stopAlive(self):
         self.__alive = False
 
+    def openNewTab(self, navigate: str = "", interval: int = 0):
+        self.execute_js(f'window.open("{navigate}");')
+        if interval > 0:
+            time.sleep(interval)
+
+    def closeTab(self, index: int):
+        self.__chromeDriver.switch_to.window(self.__chromeDriver.window_handles[index])
+        self.findByCss('body').send_keys(Keys.CONTROL + "W")
+
+    def switchTab(self, index: int = 0):
+        self.__chromeDriver.switch_to.window(self.__chromeDriver.window_handles[index])
+
     def navigate(self, navigate_to: str, invoke_adhd: bool = False, keep_alive: bool = False):
         """
         Navigate to certain web site address
@@ -123,12 +139,34 @@ class Browser:
             while True:
                 pass
 
+    def takeScreenshot(self) -> str:
+        filename = __localSettings__.YANDEX_CAPTCHA_DIR + fSys().generateRandomName() + '.png'
+        self.__chromeDriver.save_screenshot(filename=filename)
+        return filename
+
+
+
+
     # Elements API
-    def input(self, target, value, searchType="css"):
-        self.__elements.input(target, value, searchType)
+    def input(self, target, value: str):
+        """
+        :param target:
+        :type target:
+        :param value:
+        :type value:
+        :return:
+        :rtype:
+        """
+        self.__elements.input(target, value)
 
     def click(self, target):
         self.__elements.click(target=target)
+
+    def findByCss(self, target) -> WebElement:
+        return self.__elements.findByCss(target)
+
+    def clickAndInput(self, target: WebElement, value: str = "", interval: int = 0):
+        return self.__elements.clickAndInput(target=target, value=value, interval=interval)
 
     # Features API
     def runMouseADHD(self):
@@ -164,25 +202,23 @@ class Elements:
         except NoSuchElementException:
             return False
 
-    def input(self, target, value, searchType="css"):
+    def input(self, target: WebElement, value) -> WebElement:
         """
-        Input text into element
         :param target:
         :type target:
         :param value:
         :type value:
-        :param searchType:
-        :type searchType:
         :return:
         :rtype:
         """
-        entered = False
-        if self.Exists(target, searchType):
-            self.findByCss(target).send_keys(value)
+        if type(target) == WebElement:
+            target.send_keys(value)
+            self.__DEBUG(target=target, value=value)
 
-    def click(self, target, searchType="css"):
+        return target
+
+    def click(self, target: WebElement) -> WebElement:
         """
-        Click on element
         :param target:
         :type target:
         :param searchType:
@@ -190,8 +226,10 @@ class Elements:
         :return:
         :rtype:
         """
-        if self.Exists(target, searchType):
-            self.findByCss(target).send_keys(Keys.RETURN)
+        if type(target) == WebElement:
+            target.click()
+            self.__DEBUG(target=target, value="")
+        return target
 
     def findByXpath(self, target) -> list:
         """
@@ -204,7 +242,7 @@ class Elements:
         try:
             return self.__chromeDriver.getChromeDriver().find_elements_by_xpath(target)
         except NoSuchElementException:
-            pass
+            raise NoSuchElementException()
 
     def findByCss(self, target) -> WebElement:
         """
@@ -217,12 +255,72 @@ class Elements:
         try:
             return self.__chromeDriver.getChromeDriver().find_element_by_css_selector(target)
         except NoSuchElementException:
-            pass
+            raise NoSuchElementException()
+
+    def getElementPosition(self, target: WebElement) -> dict:
+        if type(target) == WebElement:
+            return target.location
+        return {"x": 0, "y": 0}
+
+    def clickAndInput(self, target: WebElement, value: str = "", interval: int = 0):
+        self.click(target=target)
+        if interval > 0:
+            time.sleep(interval)
+        if len(value) > 0:
+            self.input(target=target, value=value)
+        return target
+
+    def __DEBUG(self, target: WebElement, value: str) -> dict:
+        identifier = self.__elementClosestIdentifier(target=target)
+        elementTag = target.tag_name
+        elementType = target.get_attribute('type')
+
+        if target is not None:
+            if value != "":
+                if elementTag == "input" or elementTag == "textarea":
+                    if elementType == "password":
+                        value = self.passMask(value=value)
+                    message = __texts__.getText(1).format(identifier, value)
+                    return __logger__.Print(msg_num=0, level=__levels__.Info, message=message)
+            else:
+                message = __texts__.getText(2).format(identifier, elementTag)
+                return __logger__.Print(msg_num=0, level=__levels__.Info, message=message)
+
+        return {}
+
+    def passMask(self, value, passSign: str = '*') -> str:
+        passChars: str = ""
+        for i in range(len(value)):
+            passChars += passSign
+        return passChars
+
+    def __elementClosestIdentifier(self, target: WebElement) -> str:
+        if type(target) == WebElement:
+            if target.get_attribute('name') != '':
+                return target.get_attribute('name')
+            elif target.get_attribute('id') != '':
+                return target.get_attribute('id')
+            elif target.get_attribute('class') != '':
+                return target.get_attribute('class')
+            elif target.get_attribute('label') != '':
+                return target.get_attribute('label')
+            elif target.get_attribute('title') != '':
+                return target.get_attribute('title')
+            elif target.get_attribute('value') != '':
+                return target.get_attribute('value')
+            else:
+                return target.tag_name
+        else:
+            return target.tag_name
 
 
 class HideNavigatorFlag:
 
     def __init__(self, chromeDriver: Browser):
+        """
+        :param chromeDriver:
+        :type chromeDriver:
+        """
         self.__chromeDriver = chromeDriver
         self.exploit()
 
@@ -255,6 +353,10 @@ class HideNavigatorFlag:
 class HideHeadlessFlag:
 
     def __init__(self, chromeDriver: Browser):
+        """
+        :param chromeDriver:
+        :type chromeDriver:
+        """
         self.__chromeDriver = chromeDriver
         self.exploit()
 
@@ -272,6 +374,12 @@ class HideHeadlessFlag:
 
 class Features:
     def __init__(self, chromeDriver: Browser, jsBundle: JsBundle):
+        """
+        :param chromeDriver:
+        :type chromeDriver:
+        :param jsBundle:
+        :type jsBundle:
+        """
         self.__chromeDriver = chromeDriver
         self.__jsBundle = jsBundle
 

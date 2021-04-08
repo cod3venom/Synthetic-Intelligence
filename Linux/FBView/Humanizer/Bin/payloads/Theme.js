@@ -18,7 +18,7 @@ class Theme
         document.head.appendChild(this.style);
     }
     async addStyle(code) { this.style.innerText = code.replaceAll("\n",""); }
-    async installRED() { await this.addStyle(`*, *::before,*::after {background: rgb(57, 0, 0)  !important; color: rgb(87, 0, 0) !important; }`);}
+    async installRED() { await this.addStyle(`*, *::before,*::after {background: rgb(57, 0, 0)  !important; color: rgb(255, 98, 82) !important; }`);}
     async installBLUE() { await this.addStyle(`*, *::before,*::after {background: rgb(0, 56, 71)  !important; color: rgb(38, 139, 200) !important; }`);}
     async installGREEN() { await this.addStyle(`*, *::before,*::after {background: rgb(0, 0, 0)  !important; color: rgb(19, 250, 6) !important; }`);}
     async installBLACK_WHITE() { await this.addStyle(`*, *::before,*::after {background: rgb(0, 0, 0)  !important; color: rgb(255, 255, 255) !important; }`);}

@@ -15,3 +15,5 @@ class LocalSettingsTObject:
             self.LOG_FORMAT = JsonData["LOG_FORMAT"]
             self.BINARY_PATH = JsonData["BINARY_PATH"]
             self.JS_PAYLOADS_PATH = JsonData["JS_PAYLOADS_PATH"]
+            self.DEFAULT_ENCODING = JsonData["DEFAULT_ENCODING"]
+            self.YANDEX_CAPTCHA_DIR = JsonData["YANDEX_CAPTCHA_DIR"]

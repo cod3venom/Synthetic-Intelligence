@@ -1,1 +1,5 @@
-1#HELLO WORLD
+1# Entered text > {} : {}
+2# Clicked on > {} : {}
+3# Generated new User-agent : {}
+4# Resolved Captcha : {}
+5# Captcha was not resolved

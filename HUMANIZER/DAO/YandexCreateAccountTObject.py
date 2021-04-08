@@ -6,11 +6,12 @@ from Kernel.Global import __levels__, __logger__
 
 class YandexCreateAccountTObject:
 
-    def __init__(self, FirstName: str, LastName: str, UserName: str, Password:str,  Desktop: bool = True):
+    def __init__(self, FirstName: str, LastName: str, UserName: str, Password:str, SecurityHint: str = "",  Desktop: bool = True):
         self.FirstName = FirstName
         self.LastName = LastName
         self.UserName = UserName
         self.Password = Password
+        self.SecurityHint = SecurityHint
         self.Desktop = Desktop
         __logger__.Print(0, __levels__.Info, self.__str__())
 
@@ -20,7 +21,7 @@ class YandexCreateAccountTObject:
             if jsData != "":
                 return cls(**json.loads(jsData))
             else:
-                return cls(**{'FirstName': 'empty', 'LastName': 'empty', 'UserName': 'empty', 'Password': 'empty', 'Desktop': 'empty'})
+                return cls(**{'FirstName': 'empty', 'LastName': 'empty', 'UserName': 'empty', 'Password': 'empty', 'SecurityHint': 'empty', 'Desktop': 'empty'})
         except KeyError as KeyErr:
             __logger__.Print(0, __levels__.Error, str(KeyErr))
 
@@ -34,6 +35,7 @@ class YandexCreateAccountTObject:
         buffer.append(", LastName= " + str(self.LastName))
         buffer.append(", UserName= " + str(self.UserName))
         buffer.append(", Password= " + str(self.Password))
+        buffer.append(", Security Hint= " + str(self.SecurityHint))
         buffer.append(" Desktop= " + str(self.Desktop))
         buffer.append(">")
         return buffer.string

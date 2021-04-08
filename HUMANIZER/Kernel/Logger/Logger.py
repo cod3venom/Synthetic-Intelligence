@@ -66,11 +66,12 @@ class Logger:
     texts_file: str
     log_format: str
 
-    def __init__(self, texts_file: str, log_format: str):
+    def __init__(self, texts_file: str, log_format: str, autoInit: bool = False):
         self.texts_file = texts_file
         self.log_format = log_format
         self.texts = Texts(self.texts_file)
-        self.texts.loadTexts()
+        if autoInit:
+            self.texts.loadTexts()
 
         self.constants = Constants()
         self.level = Constants.EMPTY
@@ -93,7 +94,7 @@ class Logger:
         if self.level == self.levels.hackerType:
             self.color = self.colors.HackerType
 
-    def Print(self, msg_num: int, level: Levels, message: str = None):
+    def Print(self, msg_num: int, level: Levels, message: str = "") -> dict:
         self.level = level
         self.initColor()
 
@@ -112,3 +113,4 @@ class Logger:
         print(text)
         self.text = self.constants.EMPTY
         text = self.constants.EMPTY
+        return {"Message ID": msg_num, "Message": message, "Level": level}

@@ -1,5 +1,6 @@
 import os
-
+import random
+import string
 
 
 class fSys:
@@ -52,3 +53,7 @@ class fSys:
             os.mkdir(path)
             os.chmod(path, self.chmod_allow_everything)
         return path
+
+    def generateRandomName(self):
+        letters = string.ascii_lowercase
+        return''.join(random.choice(letters) for i in range(10))

@@ -1,6 +1,7 @@
 from selenium.webdriver.chrome.options import Options
 from DAO.BrowserSettingsTObject import BrowserSettingsTObject
 from Kernel.Browser.Exceptions import Exceptions
+from Kernel.Cheater.AgencyFactory import AgencyFactory
 
 
 class ChromeConfig:
@@ -34,6 +35,9 @@ class ChromeConfig:
             option.add_argument('--proxy-server=socks5://127.0.0.1:9050')
             option.add_argument('ignore-certificate-errors')
 
+        if self.browserSettingsTObject.generateUserAgent:
+            option.add_argument(f'user-agent={AgencyFactory().getNewAgent}')
+
         if self.browserSettingsTObject.headless:
             # Use headless browser
             option.headless = True
@@ -41,5 +45,5 @@ class ChromeConfig:
         else:
             # Set browser window size
             option.add_argument('window-size=1700,1500')
-
+            #option.add_argument('--kiosk')
         return option
