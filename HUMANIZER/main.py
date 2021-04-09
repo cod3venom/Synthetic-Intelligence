@@ -1,9 +1,7 @@
-import sys, os
-import time
+import sys
 
-from Kernel.Global import __localSettings__, __logger__, __levels__
-from Kernel.Browser.Browser import Browser
-from Vendors.Facebook.Procedures.CreateAccount import CreateAccount as fbAccount
+from Vendors.Facebook.Kernel.Scripts.CreateAccount import CreateAccount as fbAccount
+from Vendors.Facebook.Life import Life
 from Vendors.Yandex.Procedures.CreateAccount import CreateAccount as yaAccount
 
 
@@ -16,6 +14,10 @@ class Main:
         if argv == "crtYaAcc":
             crtAcc = yaAccount(sys.argv[2])
             crtAcc.start()
+        if argv == 'fbLife':
+            fbLife = Life()
+            fbLife.cmain(email=sys.argv[2], password=sys.argv[3], useIncognito=True)
+
         return 0
 
 

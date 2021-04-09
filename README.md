@@ -16,4 +16,4 @@ FB-View is an full infrastructure for phishing attacks on social media such as f
 - [ ] Facebook account mutator [YET]
 - [ ] Automated life [YET]
 
-![alt text](ReadMe/screenshot.png)
+![alt text](Readme/screenshot.png)

@@ -1,12 +1,12 @@
 from selenium.webdriver.chrome.options import Options
-from DAO.BrowserSettingsTObject import BrowserSettingsTObject
+from DAO.ChromeDriverSettingsTObject import ChromeDriverSettingsTObject
 from Kernel.Browser.Exceptions import Exceptions
 from Kernel.Cheater.AgencyFactory import AgencyFactory
 
 
 class ChromeConfig:
 
-    def __init__(self, browserSettingsTObject: BrowserSettingsTObject):
+    def __init__(self, browserSettingsTObject: ChromeDriverSettingsTObject):
         self.browserSettingsTObject = browserSettingsTObject
         self.exceptions = Exceptions()
 
@@ -37,6 +37,9 @@ class ChromeConfig:
 
         if self.browserSettingsTObject.generateUserAgent:
             option.add_argument(f'user-agent={AgencyFactory().getNewAgent}')
+        if self.browserSettingsTObject.disablePasswordService:
+            passwordPreferences = {"credentials_enable_service": False, "profile.password_manager_enabled": False}
+            option.add_experimental_option("prefs", passwordPreferences)
 
         if self.browserSettingsTObject.headless:
             # Use headless browser
