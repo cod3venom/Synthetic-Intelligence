@@ -1,19 +1,26 @@
-<h1>FB-View</h1>
+<h1>Synthetic Intelligence</h1>
 
 <p>
-FB-View is an full infrastructure for phishing attacks on social media such as facebook, twitter, linkedin, etc.
+Synthetic Intelligence (SI) is a full infrastructure for different type attacks on social media such as facebook, twitter, linkedin, etc.
 </p>
  
- ### Features
+#### Browser
 - [X] Undetectable automation
-- [X] Facebook account generator
-- [X] Yandex mail account generator
-- [X] Proxy rotations 
-- [X] Tor support
-- [X] Credentials logger
-- [ ] Captcha image resolver [YET]
+- [ ] Proxy rotations 
+- [ ] Tor support
+- [X] Credentials manager
+
+#### Features
 - [ ] Phishing page generator [YET]
-- [ ] Facebook account mutator [YET]
-- [ ] Automated life [YET]
+
+#### Facebook automated life
+- [X] Facebook account generator
+- [X] Auto adding of proposed friends
+- [X] Auto liking of posts
+
+### Yandex
+- [X] Yandex mail account generator
+- [ ] Captcha image resolver [YET]
+
 
 ![alt text](Readme/screenshot.png)
