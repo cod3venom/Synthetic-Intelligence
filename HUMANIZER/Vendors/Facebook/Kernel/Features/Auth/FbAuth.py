@@ -9,8 +9,7 @@ from Vendors.Facebook.Kernel.Features.Modals.CookiesModal import CookiesModal
 
 class FbAuth:
     __mainPage = 'https://facebook.com'
-    __mainMobilePage = 'https://m.facebook.com'
-    __chromeSettingsTObject = ChromeDriverSettingsTObject(incognito=True, generateUserAgent=True)
+    __chromeSettingsTObject = ChromeDriverSettingsTObject(incognito=True, generateUserAgent=False)
     browser = Browser(chromeDriverSettingsTObject=__chromeSettingsTObject)
     __cookieModal = CookiesModal(browser=browser)
 
@@ -21,7 +20,7 @@ class FbAuth:
     __cookiesTObject: FacebookCookiesTObject
     __cUser: str = 'c_user'
 
-    def __init__(self, email: str, password: str, isMobile: bool = False):
+    def __init__(self, email: str, password: str):
         """
         :param email:
         :type email:
@@ -29,7 +28,6 @@ class FbAuth:
         :type password:
         """
         self.fbCredentials = FacebookCredentialsTObject(USERNAME=email, PASSWORD=password)
-        self.isMobile = isMobile
         self.__preAuthActions()
 
     def isLogged(self, interval: int = 0) -> bool:
@@ -45,22 +43,13 @@ class FbAuth:
                             return True
         return False
 
-    def __openMainPage(self, keepAlive: bool = True) -> int:
-        if self.isMobile:
-            self.browser.ChromeDriver.navigate(self.__mainMobilePage)
-            return 0  # is mobile version
-        else:
-            self.browser.ChromeDriver.navigate(self.__mainPage)
-        return 1  # is pc version
-
     def __preAuthActions(self):
-        self.__openMainPage()
+        self.browser.ChromeDriver.navigate(self.__mainPage)
         self.__cookieModal.accept()
 
     def doLogin(self) -> bool:
         if not self.isLogged():
-            enterEmail = self.browser.Elements.clickAndInput(self.browser.Elements.findByCss(self.__emailInputSelector), value=self.fbCredentials.username, interval=1)
-            enterPassword = self.browser.Elements.clickAndInput(self.browser.Elements.findByCss(self.__passwordInputSelector), value=self.fbCredentials.password, interval=2)
-            clickLogin = self.browser.Elements.clickAndInput(self.browser.Elements.findByCss(self.__submitButtonSelector), interval=2)
+            enterEmail = self.browser.Elements.clickAndInput(self.browser.Elements.findElementByCss(self.__emailInputSelector), value=self.fbCredentials.username, interval=1)
+            enterPassword = self.browser.Elements.clickAndInput(self.browser.Elements.findElementByCss(self.__passwordInputSelector), value=self.fbCredentials.password, interval=2)
+            clickLogin = self.browser.Elements.clickAndInput(self.browser.Elements.findElementByCss(self.__submitButtonSelector), interval=2)
         return self.isLogged()
-

@@ -6,8 +6,8 @@ namespace Kernel\Config;
 
 class Constants
 {
-    const DB_ACCESS = "/usr/bin/FBView/Settings/DbAccess.json";
-    const DB_QUERIES = "/usr/bin/FBView/QueryFactory/Queries.que";
+    const DB_ACCESS = "/usr/bin/SI/Settings/DbAccess.json";
+    const DB_QUERIES = "/usr/bin/SI/QueryFactory/Queries.que";
 
     const _EMPTY = "";
     const NEWLINE = "\n";

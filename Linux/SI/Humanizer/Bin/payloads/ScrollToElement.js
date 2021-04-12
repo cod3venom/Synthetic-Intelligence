@@ -8,4 +8,4 @@ function scrollToElement(element)
     }
 }
 
-scrollToElement('SELECTOR;');
+scrollToElement(document.querySelector('SELECTOR;'));

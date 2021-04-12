@@ -4,7 +4,7 @@ from Kernel.Logger.Logger import Logger, Levels, Texts
 from DAO.LocalSettingsTObject import LocalSettingsTObject
 
 __software_name__: str = "HUMANIZER"
-__settings_file__: str = "/usr/bin/FBView/Humanizer/Settings/Settings.json"
+__settings_file__: str = "/usr/bin/SI/Humanizer/Settings/Settings.json"
 __localSettings__ = LocalSettingsTObject(settings_file=__settings_file__, software_name=__software_name__)
 
 

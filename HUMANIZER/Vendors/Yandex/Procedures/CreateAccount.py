@@ -25,16 +25,16 @@ class CreateAccount:
         payload += '''  return getCaptcha(runProcedure()).then(function(src){ return src; }); '''
         self.__browser.execute_js(payload)
 
-        captchaUrl = self.__browser.getChromeDriver().execute_script(payload)
-        enterFirstName = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="firstname"]'), value=self.__account.FirstName, interval=1)
-        enterLastname = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="lastname"]'), value=self.__account.LastName, interval=2)
-        clickOnLogin = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="login"]'), value=self.__account.LastName, interval=2)
-        enterPassword = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="password"]'), value=self.__account.Password, interval=2)
-        enterPasswordConfirmation = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="password_confirm"]'), value=self.__account.Password, interval=2)
-        enterSecurityQuestion = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="hint_answer"]'), value=self.__account.SecurityHint, interval=2)
+        captchaUrl = self.__browser.ChromeDriver.execute_script(payload)
+        enterFirstName = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="firstname"]'), value=self.__account.FirstName, interval=1)
+        enterLastname = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="lastname"]'), value=self.__account.LastName, interval=2)
+        clickOnLogin = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="login"]'), value=self.__account.LastName, interval=2)
+        enterPassword = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="password"]'), value=self.__account.Password, interval=2)
+        enterPasswordConfirmation = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="password_confirm"]'), value=self.__account.Password, interval=2)
+        enterSecurityQuestion = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="hint_answer"]'), value=self.__account.SecurityHint, interval=2)
 
         captchaCode = input('Enter captcha > ')
-        enterCaptcha = self.__browser.Elements.clickAndInput(self.__browser.Elements.findByCss('input[name="captcha"]'), value=captchaCode, interval=2)
+        enterCaptcha = self.__browser.Elements.clickAndInput(self.__browser.Elements.findElementByCss('input[name="captcha"]'), value=captchaCode, interval=2)
 
     def start(self):
         if self.__account.FirstName != "":

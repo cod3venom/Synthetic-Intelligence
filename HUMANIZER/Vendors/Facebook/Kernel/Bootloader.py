@@ -1,7 +1,8 @@
 from Kernel.Browser.Browser import Browser
 import threading as thr
 
-from Vendors.Facebook.Kernel.Features.Detectors.PostDetector import PostDetector
+from Vendors.Facebook.Kernel.Features.AutoPilot.AutoEmotions.AutoEmotions import AutoEmotions
+from Vendors.Facebook.Kernel.Features.AutoPilot.MayKnownDetector.ProposedFriends import ProposedFriends
 
 
 class BootLoader:
@@ -13,13 +14,9 @@ class BootLoader:
             self.__ruleOwnLife()
 
     def __ruleOwnLife(self):
-        self.__autoDetection()
-
-    def __autoDetection(self):
         keepAlive = thr.Thread(target=self.__browser.keepAlive).start()
-        postDetector = PostDetector(chromedriver=self.__browser)
-        postDetectionThread = thr.Thread(target=postDetector.execute)
-        postDetectionThread.start()
+        ProposedFriends(chromedriver=self.__browser).execute()
 
-    def __autoLikes(self):
-        pass
+        autoEmotions = AutoEmotions(chromedriver=self.__browser)
+        while self.__browser.alive:
+            autoEmotions.execute()

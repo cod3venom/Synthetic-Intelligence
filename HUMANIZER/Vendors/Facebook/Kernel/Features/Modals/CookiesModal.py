@@ -16,11 +16,11 @@ class CookiesModal:
 
     @property
     def modal(self) -> WebElement:
-        return self.__browser.Elements.findByCss(self.__modalMainContainer)
+        return self.__browser.Elements.findElementByCss(self.__modalMainContainer)
 
     def accept(self) -> WebElement:
         if self.isModalAppears:
-            return self.__browser.Elements.click(target=self.__browser.Elements.findByCss(self.__modalAcceptButton))
+            return self.__browser.Elements.click(target=self.__browser.Elements.findElementByCss(self.__modalAcceptButton))
 
     def decline(self) -> bool:
         if self.isModalAppears:

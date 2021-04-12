@@ -3,27 +3,35 @@ from Kernel.Global import __texts__, __levels__, __logger__
 from selenium.webdriver.remote.webelement import WebElement
 from Kernel.Browser.Browser import Browser
 
+# POST SELECTORS
+"""
+    MAIN CONTAINER = //div[@role="feed"]
+    POST CONTAINER = //div[@role="feed"]/div[contains(@data-pagelet, "FeedUnit")]
+
+"""
+
 
 class PostDetector:
-    __defaultPostSelector: str = 'div[data-pagelet^="FeedUnit"]'
+    __defaultPostSelector: str = '//div[@role="feed"]/div[contains(@data-pagelet, "FeedUnit")]'
+    __restartTime = 30000
 
     def __init__(self, chromedriver: Browser):
         self.__browser = chromedriver
         self.__postStack = PostStack()
 
     def execute(self):
-        while self.__browser.alive:
-            posts = self.__browser.Javascript.querySelectorAll(self.__defaultPostSelector)
-            for post in posts:
-                self.__postStack.add(targetPost=post)
-            print(__DETECTED_POSTS__)
 
-
+        posts = self.__browser.Elements.findElementsByXpath('//a')
+        link: WebElement
+        for link in posts:
+            print(f"LINKS > {str(link.get_attribute('href'))}\r\n")
+        return []
+            # print(__DETECTED_POSTS__)
 
 
 class PostStack:
-
     __AUTOID: int = 0
+
     def exists(self, targetPost: WebElement) -> bool:
         for postKey in __DETECTED_POSTS__.keys():
             if __DETECTED_POSTS__[postKey] == targetPost:

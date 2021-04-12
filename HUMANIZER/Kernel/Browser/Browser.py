@@ -80,8 +80,7 @@ class ChromeDriver:
         self.buildChromeDriver()
 
     def buildChromeDriver(self) -> webdriver.Chrome:
-        self.__chromeDriver = webdriver.Chrome(executable_path=__localSettings__.BINARY_PATH,
-                                               chrome_options=self.__browserConfig.getOptions())
+        self.__chromeDriver = webdriver.Chrome(executable_path=__localSettings__.BINARY_PATH, chrome_options=self.__browserConfig.getOptions())
         return self.chromeDriver
 
     def navigate(self, navigate_to: str):
@@ -103,6 +102,10 @@ class ChromeDriver:
         self.chromeDriver.save_screenshot(filename=filename)
         return filename
 
+    def consoleDebug(self):
+        for entry in self.__chromeDriver.get_log('browser'):
+            __logger__.Print(0, __levels__.Info, entry)
+
 
 class Javascript:
 
@@ -118,10 +121,18 @@ class Javascript:
                                                                              f"{selector}") + "return querySelectorAll();"
         return self.execute_js(code=code)
 
+    def execute_bundleJS(self, codeName: str, interval: int = 0):
+        if self.__browser is not None:
+            code = self.__browser.JsBundle.jsPackGet(codeName)
+            retCode = self.execute_js(code=code, interval=interval)
+            self.__browser.ChromeDriver.consoleDebug()
+            return retCode
+
     def execute_js(self, code: str, *args, interval: int = 0):
         try:
             if self.__browser is not None:
                 retCode = self.__browser.ChromeDriver.chromeDriver.execute_script(code, args)
+                self.__browser.ChromeDriver.consoleDebug()
                 if interval > 0:
                     time.sleep(interval)
                 return retCode
@@ -131,7 +142,9 @@ class Javascript:
 
     def execute_cdp(self, code, cmd_args):
         if self.__browser is not None:
-            return self.__browser.ChromeDriver.chromeDriver.execute_cdp_cmd(code, cmd_args)
+            retCode = self.__browser.ChromeDriver.chromeDriver.execute_cdp_cmd(code, cmd_args)
+            self.__browser.ChromeDriver.consoleDebug()
+            return retCode
         return {}
 
 
@@ -160,9 +173,27 @@ class Elements:
             self.__DEBUG(target=target, value="")
         return target
 
-    def findByCss(self, target) -> WebElement:
+    def findElementByCss(self, target) -> WebElement:
         try:
             return self.__browser.ChromeDriver.chromeDriver.find_element_by_css_selector(target)
+        except NoSuchElementException:
+            raise NoSuchElementException()
+
+    def findElementsByCss(self, target) -> WebElement:
+        try:
+            return self.__browser.ChromeDriver.chromeDriver.find_elements_by_css_selector(target)
+        except NoSuchElementException:
+            raise NoSuchElementException()
+
+    def findElementByXpath(self, target) -> WebElement:
+        try:
+            return self.__browser.ChromeDriver.chromeDriver.find_element_by_xpath(target)
+        except NoSuchElementException:
+            return None
+
+    def findElementsByXpath(self, target) -> WebElement:
+        try:
+            return self.__browser.ChromeDriver.chromeDriver.find_elements_by_xpath(target)
         except NoSuchElementException:
             raise NoSuchElementException()
 
@@ -170,6 +201,13 @@ class Elements:
         if type(target) == WebElement:
             return target.location
         return {"x": 0, "y": 0}
+
+    def setAttribute(self, target: WebElement, name: str, value: str = ""):
+        self.__browser.ChromeDriver.chromeDriver.execute_script(f"arguments[0].setAttribute('{name}','{value}')",
+                                                                target)
+
+    def getAttribute(self, target: WebElement, name: str):
+        return self.__browser.ChromeDriver.chromeDriver.execute_script(f"arguments[0].getAttribute('{name}')", target)
 
     def clickAndInput(self, target: WebElement, value: str = "", interval: int = 0):
         self.click(target=target)
