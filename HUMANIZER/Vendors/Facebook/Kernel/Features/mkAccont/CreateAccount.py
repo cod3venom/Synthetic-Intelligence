@@ -1,26 +1,21 @@
 import time
-
 from selenium.webdriver.remote.webelement import WebElement
-
+from DAO.ChromeDriverSettingsTObject import ChromeDriverSettingsTObject
 from DAO.FacebookCreateAccountTObject import FacebookCreateAccountTObject
-from Kernel.Global import __localSettings__, __logger__, __levels__, __texts__
+from Kernel.Global import __localSettings__
 from Kernel.Browser.Browser import Browser
 from Kernel.FileSystem.fSys import fSys
 
 
 class CreateAccount:
 
-    __hostAddress: str = "https://facebook.com"
-
-    def __init__(self, profile_file):
+    def __init__(self, chromedriver: Browser, profile_file: str):
         self.__account = FacebookCreateAccountTObject.TO(fSys().readfile(profile_file))
-        self.__browser = Browser(incognito=False)
-        self.__browser.ChromeDriver.navigate(self.__hostAddress)
-        self.__browser.Features.installTheme(4)
+        self.__browser = chromedriver
+        self.__browser.ChromeDriver.navigate(__localSettings__.FB_HOME_PC)
 
     def __enterData(self):
-        payload = self.__browser.JsBundle.jsPackGet("CreateFacebookAccount")
-        openRegistrationModal = self.__browser.execute_js(payload)
+        openRegistrationModal = self.__browser.Javascript.execute_bundleJS("CreateFacebookAccount")
         time.sleep(3)
 
         # Enter text data

@@ -80,7 +80,8 @@ class ChromeDriver:
         self.buildChromeDriver()
 
     def buildChromeDriver(self) -> webdriver.Chrome:
-        self.__chromeDriver = webdriver.Chrome(executable_path=__localSettings__.BINARY_PATH, chrome_options=self.__browserConfig.getOptions())
+        self.__chromeDriver = webdriver.Chrome(executable_path=__localSettings__.BINARY_PATH,
+                                               chrome_options=self.__browserConfig.getOptions())
         return self.chromeDriver
 
     def navigate(self, navigate_to: str):
@@ -116,6 +117,26 @@ class Javascript:
         return self.execute_js(self.__browser.JsBundle.jsPackGet('ScrollToElement').replace('SELECTOR;', f"{selector}"),
                                interval=1)
 
+    def scrollHVjs(self, interval: int = 1):
+        self.execute_bundleJS('ScrollBottom', interval=interval)
+        self.execute_bundleJS('ScrollTop', interval=interval)
+
+    def scrollHVkey(self, interval: int = 100):
+        for i in range(interval):
+            self.__browser.Elements.findElementByCss('body').send_keys(Keys.PAGE_DOWN)
+        for i in range(interval):
+            self.__browser.Elements.findElementByCss('body').send_keys(Keys.PAGE_UP)
+
+    def scrollDownByKey(self, interval: int = 0):
+        self.__browser.Elements.findElementByCss('body').send_keys(Keys.PAGE_DOWN)
+        if interval > 0:
+            time.sleep(interval)
+
+    def scrollUpByKey(self, interval: int = 0):
+        self.__browser.Elements.findElementByCss('body').send_keys(Keys.PAGE_UP)
+        if interval > 0:
+            time.sleep(interval)
+
     def querySelectorAll(self, selector: str):
         code = self.__browser.JsBundle.jsPackGet('querySelectorAll').replace('SELECTOR;',
                                                                              f"{selector}") + "return querySelectorAll();"
@@ -131,6 +152,7 @@ class Javascript:
     def execute_js(self, code: str, *args, interval: int = 0):
         try:
             if self.__browser is not None:
+                print(code)
                 retCode = self.__browser.ChromeDriver.chromeDriver.execute_script(code, args)
                 self.__browser.ChromeDriver.consoleDebug()
                 if interval > 0:

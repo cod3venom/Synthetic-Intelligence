@@ -11,6 +11,7 @@ class fSys:
             if os.path.isfile(file_path):
                 with open(file_path, 'r', encoding='utf8') as reader:
                     return reader.read()
+        return ""
 
     def append(self, file_path: str, content: str) -> bool:
         if file_path is not None and content is not None:

@@ -1,28 +1,33 @@
 import random
 import time
-
 from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, \
     ElementNotInteractableException, ElementClickInterceptedException
 from selenium.webdriver.remote.webelement import WebElement
+
+from Kernel.Context.Context import Context
+from Kernel.DataOps.DictParser import DictParser
 from Kernel.Global import __texts__, __levels__, __logger__
 from Kernel.Browser.Browser import Browser
 import threading as thr
 
+from Vendors.Facebook.Kernel.Features.Auth.FbAuth import FbAuth
+
 
 class AutoEmotions:
+    __ctx: Context
     __clickableEmotionsList = 'div[aria-label="Like"]'
     __infiniteScrollToBottom = ''' setInterval(function() { window.scrollTo(0, document.body.scrollHeight); }, 2000); '''
     __autoID: int = 0
 
-    def __init__(self, chromedriver: Browser):
-        self.__browser = chromedriver
+    def __init__(self, ctx: Context):
+        self.__ctx = ctx
         self.__pack = AutoEmotionsPack()
 
     def execute(self):
         self.__detectButtons()
 
     def __detectButtons(self):
-        likeContainers = self.__browser.Elements.findElementsByCss(self.__clickableEmotionsList)
+        likeContainers = self.__ctx.browser.Elements.findElementsByCss(self.__clickableEmotionsList)
 
         container: WebElement
         for index, container in enumerate(likeContainers):
@@ -30,13 +35,13 @@ class AutoEmotions:
             if validButton:
                 self.__clickLike(target_button=container)
             if index == len(likeContainers):
-                self.__browser.Javascript.execute_bundleJS('ScrollBottom', interval=3)
+                self.__ctx.browser.Javascript.scrollDownByKey(interval=3)
 
     def __clickLike(self, target_button: WebElement) -> bool:
         try:
             self.__autoID += 1
-            self.__browser.Elements.setAttribute(target_button, 'HUMANIZER_ID', self.__autoID)
-            self.__browser.Javascript.scrollToElement('*[HUMANIZER_ID]')
+            self.__ctx.browser.Elements.setAttribute(target_button, 'HUMANIZER_ID', self.__autoID)
+            self.__ctx.browser.Javascript.scrollToElement('*[HUMANIZER_ID]')
             target_button.click()
             time.sleep(3)
 

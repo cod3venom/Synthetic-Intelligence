@@ -1,5 +1,7 @@
+import sys
 import time
 
+from Kernel.Global import __logger__,__levels__, __texts__
 from DAO.ChromeDriverSettingsTObject import ChromeDriverSettingsTObject
 from Kernel.Browser.Browser import Browser
 from Vendors.Facebook.DAO.FacebookCookiesTObject import FacebookCookiesTObject
@@ -10,8 +12,7 @@ from Vendors.Facebook.Kernel.Features.Modals.CookiesModal import CookiesModal
 class FbAuth:
     __mainPage = 'https://facebook.com'
     __chromeSettingsTObject = ChromeDriverSettingsTObject(incognito=True, generateUserAgent=False)
-    browser = Browser(chromeDriverSettingsTObject=__chromeSettingsTObject)
-    __cookieModal = CookiesModal(browser=browser)
+    browser:Browser
 
     __emailInputSelector = 'input[name="email"]'
     __passwordInputSelector = 'input[type="password"][name="pass"]'
@@ -44,12 +45,19 @@ class FbAuth:
         return False
 
     def __preAuthActions(self):
+        self.browser = Browser(chromeDriverSettingsTObject=self.__chromeSettingsTObject)
+        cookieModal = CookiesModal(browser=self.browser)
         self.browser.ChromeDriver.navigate(self.__mainPage)
-        self.__cookieModal.accept()
+        cookieModal.accept()
 
     def doLogin(self) -> bool:
         if not self.isLogged():
             enterEmail = self.browser.Elements.clickAndInput(self.browser.Elements.findElementByCss(self.__emailInputSelector), value=self.fbCredentials.username, interval=1)
             enterPassword = self.browser.Elements.clickAndInput(self.browser.Elements.findElementByCss(self.__passwordInputSelector), value=self.fbCredentials.password, interval=2)
             clickLogin = self.browser.Elements.clickAndInput(self.browser.Elements.findElementByCss(self.__submitButtonSelector), interval=2)
-        return self.isLogged()
+        flag = self.isLogged()
+        if not flag:
+            __logger__.Print(10, __levels__.Warning)
+            sys.exit(1)
+        return flag
+

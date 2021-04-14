@@ -16,4 +16,9 @@ class LocalSettingsTObject:
             self.BINARY_PATH = JsonData["BINARY_PATH"]
             self.JS_PAYLOADS_PATH = JsonData["JS_PAYLOADS_PATH"]
             self.DEFAULT_ENCODING = JsonData["DEFAULT_ENCODING"]
+            ################# FACEBOOK SETTINGS ########################
+            self.FB_HOME_PC = JsonData["FB_HOME_PC"]
+            self.FB_HOME_MOBILE = JsonData["FB_HOME_MOBILE"]
+
+            ################# YANDEX SETTINGS ########################
             self.YANDEX_CAPTCHA_DIR = JsonData["YANDEX_CAPTCHA_DIR"]
