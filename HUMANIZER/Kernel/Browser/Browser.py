@@ -1,10 +1,10 @@
 import enum
-import sys
 import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException, \
+    ElementNotInteractableException, ElementClickInterceptedException, WebDriverException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -44,6 +44,11 @@ class Browser:
         self.Javascript.execute_js(f'window.open("{navigate}");')
         if interval > 0:
             time.sleep(interval)
+
+    def refresh(self, interval: int = 0):
+        if interval > 0:
+            time.sleep(interval)
+        self.ChromeDriver.chromeDriver.refresh()
 
     @property
     def ChromeDriver(self):
@@ -152,7 +157,6 @@ class Javascript:
     def execute_js(self, code: str, *args, interval: int = 0):
         try:
             if self.__browser is not None:
-                print(code)
                 retCode = self.__browser.ChromeDriver.chromeDriver.execute_script(code, args)
                 self.__browser.ChromeDriver.consoleDebug()
                 if interval > 0:
@@ -183,29 +187,40 @@ class Elements:
             return False
 
     def input(self, target: WebElement, value) -> WebElement:
-        if type(target) == WebElement:
-            target.send_keys(value)
-            self.__DEBUG(target=target, value=value)
-
+        try:
+            if type(target) == WebElement:
+                target.send_keys(value)
+                self.__DEBUG(target=target, value=value)
+        except ElementNotInteractableException:
+            return target
         return target
 
     def click(self, target: WebElement) -> WebElement:
-        if type(target) == WebElement:
-            target.click()
+        try:
+            if type(target) == WebElement:
+                target.click()
             self.__DEBUG(target=target, value="")
+        except ElementNotInteractableException:
+            return target
+        except ElementClickInterceptedException:
+            return target
+        except StaleElementReferenceException:
+            return target
+        except WebDriverException:
+            return target
         return target
 
     def findElementByCss(self, target) -> WebElement:
         try:
             return self.__browser.ChromeDriver.chromeDriver.find_element_by_css_selector(target)
         except NoSuchElementException:
-            raise NoSuchElementException()
+            return None
 
-    def findElementsByCss(self, target) -> WebElement:
+    def findElementsByCss(self, target) -> list:
         try:
             return self.__browser.ChromeDriver.chromeDriver.find_elements_by_css_selector(target)
         except NoSuchElementException:
-            raise NoSuchElementException()
+            return None
 
     def findElementByXpath(self, target) -> WebElement:
         try:
@@ -213,11 +228,11 @@ class Elements:
         except NoSuchElementException:
             return None
 
-    def findElementsByXpath(self, target) -> WebElement:
+    def findElementsByXpath(self, target) -> list:
         try:
             return self.__browser.ChromeDriver.chromeDriver.find_elements_by_xpath(target)
         except NoSuchElementException:
-            raise NoSuchElementException()
+            return None
 
     def getElementPosition(self, target: WebElement) -> dict:
         if type(target) == WebElement:

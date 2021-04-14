@@ -1,7 +1,7 @@
 import sys
 import time
 
-from Kernel.Global import __logger__,__levels__, __texts__
+from Kernel.Global import __localSettings__ , __logger__, __levels__, __texts__
 from DAO.ChromeDriverSettingsTObject import ChromeDriverSettingsTObject
 from Kernel.Browser.Browser import Browser
 from Vendors.Facebook.DAO.FacebookCookiesTObject import FacebookCookiesTObject
@@ -10,9 +10,8 @@ from Vendors.Facebook.Kernel.Features.Modals.CookiesModal import CookiesModal
 
 
 class FbAuth:
-    __mainPage = 'https://facebook.com'
     __chromeSettingsTObject = ChromeDriverSettingsTObject(incognito=True, generateUserAgent=False)
-    browser:Browser
+    browser: Browser
 
     __emailInputSelector = 'input[name="email"]'
     __passwordInputSelector = 'input[type="password"][name="pass"]'
@@ -47,7 +46,7 @@ class FbAuth:
     def __preAuthActions(self):
         self.browser = Browser(chromeDriverSettingsTObject=self.__chromeSettingsTObject)
         cookieModal = CookiesModal(browser=self.browser)
-        self.browser.ChromeDriver.navigate(self.__mainPage)
+        self.browser.ChromeDriver.navigate(__localSettings__.FB_HOME_PC)
         cookieModal.accept()
 
     def doLogin(self) -> bool:
