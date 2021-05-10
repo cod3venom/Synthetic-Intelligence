@@ -1,7 +1,7 @@
 <h1>Synthetic Intelligence</h1>
 
 <p>
-Synthetic Intelligence (SI) is a full infrastructure for different type attacks on social media such as facebook, twitter, linkedin, etc.
+Synthetic Intelligence (SI) is a full infrastructure for different type of attacks on social media such as facebook, twitter, linkedin, etc.
 </p>
  
 #### Browser
